@@ -1,0 +1,13 @@
+# Settings used to reproduce the SIGSPATIAL 2022 numbers.
+epochs: 50
+batch_size: 32
+lr: 1.0e-3
+lambda_speed: 1.0
+lambda_flow: 0.5
+lambda_weather: 0.3
+gradnorm_alpha: 1.5
+hidden_dim: 128
+n_weather_classes: 4
+weather_classes: [clear, rain, snow, freezing_rain]
+era5:
+  vars: [t2m, d2m, u10, v10, tp, sd]
