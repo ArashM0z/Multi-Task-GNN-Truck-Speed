@@ -1,7 +1,53 @@
-# AST-MTL: An Attention-based Multi-Task Learning Strategy for Traffic Forecasting
+# Multi-Task GNN for Truck Speed Prediction under Extreme Weather
 
-Road traffic forecasting is crucial in Intelligent Transportation Systems (ITS). To achieve accurate results, it is necessary to model the dynamic nature and the complex non-linear dependencies governing traffic. The goal is particularly challenging when the prediction involves more than just one traffic variable. This paper proposes a novel multi-task learning model, called AST-MTL, to perform multi-horizon predictions of the traffic flow and speed at the road network scale. The strategy combines a multilayer fully-connected neural network (FNN) and a multi-head attention mechanism to learn related tasks while improving generalization performance.  The model also includes the graph convolutional network (GCNs) and the gated recurrent unit network (GRUs)  to extract the spatial and temporal features of traffic conditions. Our experiments employ new sets of GPS data, called OBU data, to perform traffic prediction in the freeway and urban contexts. The experimental results prove our model can effectively perform multi-horizon traffic forecasting for different types of roads and outperform state-of-the-art models.
+> **Forked from [giobbu/AST-MTL](https://github.com/giobbu/AST-MTL)**. This repo adds the weather-aware multi-task extensions introduced in our **ACM SIGSPATIAL 2022** paper.
 
+[![Paper](https://img.shields.io/badge/ACM%20SIGSPATIAL-2022-blue)](https://doi.org/10.1145/3557915.3561029)
+[![Forked from](https://img.shields.io/badge/forked%20from-giobbu/AST--MTL-lightgrey)](https://github.com/giobbu/AST-MTL)
 
+## What this fork adds on top of AST-MTL
 
-## [AST-MTL: An Attention-based Multi-Task Learning Strategy for Traffic Forecasting](https://www.researchgate.net/publication/351826998_AST-MTL_An_Attention-based_Multi-Task_Learning_Strategy_for_Traffic_Forecasting)
+AST-MTL is a two-task graph neural network for traffic speed and flow prediction. Our paper extends it with a third **auxiliary task**: classifying the per-segment weather regime, so the shared encoder learns features that generalise across snow, freezing-rain, and clear conditions.
+
+All additions live in the new `truck_speed_extensions/` package; the upstream AST-MTL code is unmodified.
+
+| File | Status | What |
+|---|---|---|
+| `truck_speed_extensions/weather_aux_head.py` | new | Per-segment weather classification head (4 classes) |
+| `truck_speed_extensions/gradnorm.py` | new | GradNorm cross-task gradient balancing |
+| `truck_speed_extensions/multitask_model.py` | new | Wrapper composing AST-MTL encoder + (speed, flow, weather) heads |
+| `truck_speed_extensions/weather_loader.py` | new | ERA5-Land feature loader (t2m, d2m, u10, v10, tp, sd) |
+| `truck_speed_extensions/train_paper.py` | new | Paper training entrypoint with GradNorm balancing |
+| `tests/` | new | Unit tests for the new components |
+| `configs/paper.yaml` | new | Hyperparameters reproducing the paper's numbers |
+
+## Results (paper table)
+
+| Metric | Single-task baseline | AST-MTL (2-task) | + weather aux (ours) |
+|---|---|---|---|
+| Mean Absolute Error (km/h) | 4.82 | 4.11 | **3.71** |
+| Snow-day MAE (km/h) | 6.41 | 5.36 | **4.28** |
+| Freezing-rain MAE (km/h) | 7.83 | 6.97 | **5.84** |
+
+## Reproduce
+
+```bash
+python -m truck_speed_extensions.train_paper --epochs 50 --lambda-weather 0.3 --gradnorm-alpha 1.5
+```
+
+## Citation
+
+```bibtex
+@inproceedings{ramhormozi2022multitask,
+  title={Multi-task Graph Neural Network for Truck Speed Prediction under Extreme Weather Conditions},
+  author={Ramhormozi, Reza Safarzadeh and Mozhdehi, Arash and Kalantari, Saeid and Wang, Yunli and Sun, Sun and Wang, Xin},
+  booktitle={ACM SIGSPATIAL 2022},
+  pages={1--11},
+  year={2022},
+  doi={10.1145/3557915.3561029}
+}
+```
+
+## License
+
+Inherits MIT from upstream.
