@@ -21,13 +21,9 @@ All additions live in the new `truck_speed_extensions/` package; the upstream AS
 | `tests/` | new | Unit tests for the new components |
 | `configs/paper.yaml` | new | Hyperparameters reproducing the paper's numbers |
 
-## Results (paper table)
+## Results
 
-| Metric | Single-task baseline | AST-MTL (2-task) | + weather aux (ours) |
-|---|---|---|---|
-| Mean Absolute Error (km/h) | 4.82 | 4.11 | **3.71** |
-| Snow-day MAE (km/h) | 6.41 | 5.36 | **4.28** |
-| Freezing-rain MAE (km/h) | 7.83 | 6.97 | **5.84** |
+See the paper for the authoritative numbers (test MAE, snow-day MAE, freezing-rain MAE) on the industrial datasets used in the SIGSPATIAL 2022 paper. The results table is intentionally omitted from this fork to avoid drift between the published numbers and the open-source baseline.
 
 ## Reproduce
 
